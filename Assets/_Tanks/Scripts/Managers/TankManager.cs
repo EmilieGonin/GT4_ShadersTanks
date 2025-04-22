@@ -76,6 +76,10 @@ namespace Tanks.Complete
                 var renderer = renderers[i];
                 for (int j = 0; j < renderer.materials.Length; ++j)
                 {
+                    //if (renderer.materials[j].HasProperty("_TankColor"))
+                    //{
+                    //    renderer.materials[j].SetColor("_TankColor", m_PlayerColor);
+                    //}
                     // If the material is the tank color one...
                     if (renderer.materials[j].name.Contains("TankColor"))
                     {
