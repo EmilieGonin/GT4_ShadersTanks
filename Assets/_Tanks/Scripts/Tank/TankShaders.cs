@@ -48,7 +48,7 @@ public class TankShaders : MonoBehaviour
 
     private IEnumerator ResetDamage()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.1f);
 
         foreach (var item in _originalMaterials)
         {
