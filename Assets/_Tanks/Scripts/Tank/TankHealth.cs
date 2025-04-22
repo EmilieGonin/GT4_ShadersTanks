@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.InputSystem.Users;
 using UnityEngine.UI;
 
 namespace Tanks.Complete
@@ -20,10 +22,13 @@ namespace Tanks.Complete
         private float m_ShieldValue;                        // Percentage of reduced damage when the tank has a shield.
         private bool m_IsInvincible;                        // Is the tank invincible in this moment?
 
+        private TankShaders _shaders;
+
         private void Awake ()
         {
             // Set the slider max value to the max health the tank can have
             m_Slider.maxValue = m_StartingHealth;
+            _shaders = GetComponent<TankShaders>();
         }
 
         private void OnDestroy()
@@ -59,7 +64,10 @@ namespace Tanks.Complete
                 if (m_CurrentHealth <= 0f && !m_Dead)
                 {
                     OnDeath ();
+                    return;
                 }
+
+                _shaders.ShowDamage();
             }
         }
 
