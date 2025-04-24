@@ -10,10 +10,14 @@ public class TankShaders : MonoBehaviour
     [Header("Damage Shader")]
     [SerializeField] private Material _tankDamage;
 
+    [Header("Damage Shader")]
+    [SerializeField] private GameObject m_hitTank;
+
     [Header("Fire Ball Shader")]
     [SerializeField] private GameObject m_fireBallShader;
     [SerializeField] private float m_ShootScale = 0.1f;
     [SerializeField] private float m_offset = 0.5f;
+    [SerializeField] private GameObject m_explosionVFX;
 
     [Header("Spawn / Removed Shader")]
     [SerializeField] private int _actionEnableTankDuration;
@@ -103,8 +107,9 @@ public class TankShaders : MonoBehaviour
 
     public void UpdateFireBall(float MaxChargeTime)
     {
-        if(m_currentLoadingTime == 0f)
+        if (m_currentLoadingTime == 0f)
         {
+            m_explosionVFX.SetActive(false);
             m_fireBallShader.SetActive(true);
             m_fireBallShader.transform.localScale = Vector3.zero;
         }
@@ -119,6 +124,7 @@ public class TankShaders : MonoBehaviour
     {
         m_fireBallShader.SetActive(false);
         m_currentLoadingTime = 0f;
+        m_explosionVFX.SetActive(true);
     }
 
     private IEnumerator SetAnimationEnableProgress(bool invertProgress = false, Action action = null)
