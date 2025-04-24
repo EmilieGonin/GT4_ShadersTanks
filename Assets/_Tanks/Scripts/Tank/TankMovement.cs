@@ -9,6 +9,8 @@ namespace Tanks.Complete
     [DefaultExecutionOrder(-10)]
     public class TankMovement : MonoBehaviour
     {
+        [SerializeField] private ParticleSystem _dustTrail;
+
         [Tooltip("The player number. Without a tank selection menu, Player 1 is left keyboard control, Player 2 is right keyboard")]
         public int m_PlayerNumber = 1;              // Used to identify which tank belongs to which player.  This is set by this tank's manager.
         [Tooltip("The speed in unity unit/second the tank move at")]
@@ -41,6 +43,8 @@ namespace Tanks.Complete
         private InputAction m_TurnAction;             // The InputAction used to shot, retrieved from TankInputUser
 
         private Vector3 m_RequestedDirection;       // In Direct Control mode, store the direction the user *wants* to go toward
+
+        private bool _shouldPlayParticles = true;
         
         private void Awake ()
         {
@@ -139,7 +143,20 @@ namespace Tanks.Complete
             }
             
             EngineAudio ();
+
+            if (IsGoingForward() && _shouldPlayParticles)
+            {
+                _shouldPlayParticles = false;
+                _dustTrail.Play();
+            }
+            else if (!IsGoingForward() && _dustTrail.isPlaying)
+            {
+                _shouldPlayParticles = true;
+                _dustTrail.Stop(true, ParticleSystemStopBehavior.StopEmitting);
+            }
         }
+
+        private bool IsGoingForward() => m_MovementInputValue > 0.1f;
 
 
         private void EngineAudio ()
@@ -210,7 +227,7 @@ namespace Tanks.Complete
                 // in normal "tank control" the speed value is how much we press "up/forward"
                 speedInput = m_MovementInputValue;
             }
-            
+
             // Create a vector in the direction the tank is facing with a magnitude based on the input, speed and the time between frames.
             Vector3 movement = transform.forward * speedInput * m_Speed * Time.deltaTime;
 
