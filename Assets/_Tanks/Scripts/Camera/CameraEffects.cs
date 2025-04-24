@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class CameraEffects : MonoBehaviour
 {
-    [SerializeField] private Material _screenShake;
+    [SerializeField] private Material _cameraShaders;
     [SerializeField] private float _shakeDuration = 0.2f;
     [SerializeField] private float _shakeAmplitude = 0.01f;
 
     private bool _isShaking = false;
 
-    private const string SHAKE_AMPLITUDE = "_Amplitude";
+    private const string SHAKE_AMPLITUDE = "_ShakeAmplitude";
 
     private void Awake()
     {
@@ -30,9 +30,9 @@ public class CameraEffects : MonoBehaviour
     private IEnumerator Shake()
     {
         _isShaking = true;
-        _screenShake.SetFloat(SHAKE_AMPLITUDE, _shakeAmplitude);
+        _cameraShaders.SetFloat(SHAKE_AMPLITUDE, _shakeAmplitude);
         yield return new WaitForSeconds(_shakeDuration);
-        _screenShake.SetFloat(SHAKE_AMPLITUDE, 0);
+        _cameraShaders.SetFloat(SHAKE_AMPLITUDE, 0);
         _isShaking = false;
     }
 }
