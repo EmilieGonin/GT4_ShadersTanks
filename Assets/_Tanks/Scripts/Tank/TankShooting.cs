@@ -30,7 +30,9 @@ namespace Tanks.Complete
 
         [HideInInspector]
         public TankInputUser m_InputUser;           // The Input User component for that tanks. Contains the Input Actions. 
-        
+
+        private TankShaders _shaders;
+
         public float CurrentChargeRatio =>
             (m_CurrentLaunchForce - m_MinLaunchForce) / (m_MaxLaunchForce - m_MinLaunchForce); //The charging amount between 0-1
         public bool IsCharging => m_IsCharging;
@@ -64,6 +66,7 @@ namespace Tanks.Complete
         private void Awake()
         {
             m_InputUser = GetComponent<TankInputUser>();
+            _shaders = GetComponent<TankShaders>();
             if (m_InputUser == null)
                 m_InputUser = gameObject.AddComponent<TankInputUser>();
         }
@@ -114,7 +117,6 @@ namespace Tanks.Complete
             if (m_IsCharging)
             {
                 Fire();
-                m_IsCharging = false;
             }
         }
 
@@ -137,13 +139,14 @@ namespace Tanks.Complete
                 m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
 
                 m_AimSlider.value = m_CurrentLaunchForce;
+
+                _shaders.UpdateFireBall(m_MaxChargeTime);
             }
             // Otherwise, if the fire button is released and the shell hasn't been launched yet...
             else if (fireAction.WasReleasedThisFrame() && !m_Fired)
             {
                 // ... launch the shell.
                 Fire ();
-                m_IsCharging = false;
             }
         }
         
@@ -174,7 +177,7 @@ namespace Tanks.Complete
 
                 // Change the clip to the charging clip and start it playing.
                 m_ShootingAudio.clip = m_ChargingClip;
-                m_ShootingAudio.Play ();
+                m_ShootingAudio.Play();
             }
             // Otherwise, if the fire button is being held and the shell hasn't been launched yet...
             else if (fireAction.IsPressed() && !m_Fired)
@@ -183,6 +186,8 @@ namespace Tanks.Complete
                 m_CurrentLaunchForce += m_ChargeSpeed * Time.deltaTime;
 
                 m_AimSlider.value = m_CurrentLaunchForce;
+
+                _shaders.UpdateFireBall(m_MaxChargeTime);
             }
             // Otherwise, if the fire button is released and the shell hasn't been launched yet...
             else if (fireAction.WasReleasedThisFrame() && !m_Fired)
@@ -195,6 +200,9 @@ namespace Tanks.Complete
 
         private void Fire ()
         {
+            m_IsCharging = false;
+            _shaders.StopFireBall();
+
             // Set the fired flag so only Fire is only called once.
             m_Fired = true;
 
