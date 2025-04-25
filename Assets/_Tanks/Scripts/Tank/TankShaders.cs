@@ -129,7 +129,10 @@ public class TankShaders : MonoBehaviour
 
     private IEnumerator SetAnimationEnableProgress(bool invertProgress = false, Action action = null)
     {
-        _teleporter.SetActive(true);
+        if (!invertProgress)
+        {
+            _teleporter.SetActive(true);
+        }
 
         float currentTime = 0f;
         while (currentTime < _actionEnableTankDuration)
